@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "672449945018",
+    "firebase_url": "https://personal-dictionary-f46c1.firebaseio.com",
+    "project_id": "personal-dictionary-f46c1",
+    "storage_bucket": "personal-dictionary-f46c1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672449945018:android:7146e059a808a5efe81183",
+        "android_client_info": {
+          "package_name": "com.saj.android.personal_dictionary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "672449945018-473joi8k7hhfnvtglsqkaisa7ijjggfq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDT9IEb2jcs98W2jKcrknI0cYXMf3Av7U8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "672449945018-473joi8k7hhfnvtglsqkaisa7ijjggfq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
