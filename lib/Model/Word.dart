@@ -5,7 +5,7 @@ class Word {
   String meaning;
   String id;
 
-  Word(String id, String word, String meaning) {
+  Word(String word, String meaning) {
     this.id = id;
     this.word = word;
     this.meaning = meaning;

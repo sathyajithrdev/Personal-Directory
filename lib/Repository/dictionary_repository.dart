@@ -12,7 +12,9 @@ class DictionaryRepository {
 
     wordDocument.documents.forEach((g) {
       var data = g.data;
-      words.add(new Word(g.documentID, data["word"], data["meaning"]));
+      var word = new Word(data["word"], data["meaning"]);
+      word.id = g.documentID;
+      words.add(word);
     });
     return words;
   }
@@ -22,5 +24,9 @@ class DictionaryRepository {
     await Firestore.instance.runTransaction((Transaction tx) async {
       await tx.set(postRef.document(), word.toJson());
     });
+  }
+
+  Future<void> deleteWord(Word word) async {
+    await databaseReference.collection('words').document(word.id).delete();
   }
 }
