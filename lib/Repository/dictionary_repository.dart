@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:personal_dictionary/Model/Word.dart';
+import 'package:personal_dictionary/Model/word.dart';
 
 class DictionaryRepository {
   final databaseReference = Firestore.instance;
