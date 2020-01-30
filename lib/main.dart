@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
   }
 
   void _showNotificationWithDefaultSound() {
-    Workmanager.executeTask((task, inputData) {
+    Workmanager.executeTask((task, inputData) async {
       DictionaryBloc dictionaryBloc = new DictionaryBloc();
       List<Word> words = await dictionaryBloc.getAllWords();
 
