@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:personal_dictionary/Interface/IDictionaryEventListener.dart';
-import 'package:personal_dictionary/Model/busy_data.dart';
 import 'package:personal_dictionary/Model/word.dart';
 import 'package:personal_dictionary/Repository/dictionary_repository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -52,6 +51,10 @@ class DictionaryBloc extends Bloc {
     listener?.onEventCompleted(DictionaryEvent.FetchingWord);
   }
 
+  Future<List<Word>> getAllWords() {
+    return _dictionaryRepository.getAllWords() ?? new List();
+  }
+
   addWord(Word word) async {
     listener?.onEventStart(DictionaryEvent.AddNewWord);
     await _dictionaryRepository.addNewWord(word);
@@ -73,7 +76,6 @@ class DictionaryBloc extends Bloc {
     await _dictionaryRepository.updateWord(word);
     _wordStreamController.sink.add(allWords);
     listener?.onEventCompleted(DictionaryEvent.UpdateWord);
-
   }
 
   getWordsWithFilter(String word) {
@@ -95,4 +97,3 @@ class DictionaryBloc extends Bloc {
     return Tuple2(true, "");
   }
 }
-

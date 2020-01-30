@@ -45,8 +45,8 @@ class HomeScreen extends BaseStatelessWidget
             builder: (context, homeStateSnapshot) {
               HomeStateData homeStateData = homeStateSnapshot.data;
               String animation = "To Add";
-              if (homeStateData.homeState == HomeState.AddNewWord ||
-                  homeStateData.homeState == HomeState.EditWord) {
+              if (homeStateData?.homeState == HomeState.AddNewWord ||
+                  homeStateData?.homeState == HomeState.EditWord) {
                 animation = "To Close";
               }
               return Container(
