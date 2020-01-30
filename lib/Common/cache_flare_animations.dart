@@ -2,7 +2,8 @@ import 'package:flare_flutter/flare_cache.dart';
 import 'package:flutter/services.dart';
 
 const _filesToWarmUp = [
-  "assets/animations/analysis.flr"
+  "assets/animations/analysis.flr",
+  "assets/animations/add_close.flr",
 ];
 
 /// Ensure all Flare assets used by this app are cached and ready to

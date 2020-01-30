@@ -12,7 +12,7 @@ class HomeStateBloc extends Bloc {
       _homeStateStreamController.stream;
 
   HomeStateBloc() {
-    setHomeState(HomeState.ViewWordList);
+    setHomeState(HomeState.ViewWordList, "Loading words, please wait...");
   }
 
   @override
@@ -20,15 +20,17 @@ class HomeStateBloc extends Bloc {
     _homeStateStreamController.close();
   }
 
-  void setHomeState(HomeState state) {
-    _homeStateStreamController.sink.add(new HomeStateData(homeState: state));
+  void setHomeState(HomeState state, String message) {
+    _homeStateStreamController.sink
+        .add(new HomeStateData(homeState: state, message: message));
   }
 
   void setHomeStateAsPerCurrentState() {
-    if (_homeStateStreamController.value.homeState == HomeState.AddNewWord) {
-      setHomeState(HomeState.ViewWordList);
+    if (_homeStateStreamController.value.homeState == HomeState.AddNewWord ||
+        _homeStateStreamController.value.homeState == HomeState.EditWord) {
+      setHomeState(HomeState.ViewWordList, "Loading words, please wait...");
     } else {
-      setHomeState(HomeState.AddNewWord);
+      setHomeState(HomeState.AddNewWord, "");
     }
   }
 }

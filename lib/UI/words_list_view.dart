@@ -11,6 +11,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class WordListView extends BaseStatelessWidget {
   final DictionaryBloc _bloc = DictionaryBloc();
+  final VoidCallback onWordListingCompleted;
+  final Function(Word word) onUpdateWordClick;
+
+  WordListView({@required this.onWordListingCompleted, this.onUpdateWordClick});
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +24,9 @@ class WordListView extends BaseStatelessWidget {
       child: StreamBuilder(
           stream: _bloc.wordsStream,
           builder: (context, wordsSnapshot) {
+            if (wordsSnapshot.data != null) {
+              onWordListingCompleted();
+            }
             return getWordListUI(wordsSnapshot.data);
           }),
     );
@@ -122,6 +129,7 @@ class WordListView extends BaseStatelessWidget {
             IconSlideAction(
                 caption: 'Edit',
                 color: Colors.green,
+                onTap: () => _updateWord(word),
                 iconWidget: Padding(
                   padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
                   child: Icon(
@@ -150,6 +158,12 @@ class WordListView extends BaseStatelessWidget {
   _deleteWord(Word word) async {
     await _bloc.deleteWord(word);
     showToast("Word deleted :)");
+  }
+
+  _updateWord(Word word) async {
+    if (onUpdateWordClick != null) {
+      onUpdateWordClick(word);
+    }
   }
 
   openGoogleSearch(String word) async {

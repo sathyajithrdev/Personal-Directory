@@ -29,4 +29,8 @@ class DictionaryRepository {
   Future<void> deleteWord(Word word) async {
     await databaseReference.collection('words').document(word.id).delete();
   }
+
+  Future<void> updateWord(Word word) async {
+    await databaseReference.collection('words').document(word.id).setData(word.toJson());
+  }
 }
