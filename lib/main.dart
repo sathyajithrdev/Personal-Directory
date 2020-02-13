@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:personal_dictionary/UI/home.dart';
 import 'package:workmanager/workmanager.dart';
@@ -95,5 +94,11 @@ Future<bool> sendWordOfTheDayLocalNotification() async {
   } else {
     debugPrint("No words found to notify");
   }
+
+  await SchedulerUtil().scheduleOneOffTask(
+      SchedulerUtil.WordOfTheDayTaskId,
+      SchedulerUtil.WordOfTheDayTask,
+      Duration(minutes: 15));
+
   return Future.value(false);
 }
