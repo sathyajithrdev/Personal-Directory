@@ -7,9 +7,7 @@ class DictionaryRepository {
   Future<List<Word>> getAllWords() async {
     var wordDocument =
         await databaseReference.collection('words').getDocuments();
-
     var words = new List<Word>();
-
     wordDocument.documents.forEach((g) {
       var data = g.data;
       var word = new Word(data["word"], data["meaning"]);
@@ -31,6 +29,9 @@ class DictionaryRepository {
   }
 
   Future<void> updateWord(Word word) async {
-    await databaseReference.collection('words').document(word.id).setData(word.toJson());
+    await databaseReference
+        .collection('words')
+        .document(word.id)
+        .setData(word.toJson());
   }
 }

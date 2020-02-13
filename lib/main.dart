@@ -1,14 +1,15 @@
 import 'dart:math';
 
+import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:personal_dictionary/BLoC/dictionary_bloc.dart';
 import 'package:personal_dictionary/UI/home.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'Model/word.dart';
-import 'Util/SchedulerUtil.dart';
+import 'Repository/dictionary_repository.dart';
 import 'Util/SharedPreferenceUtil.dart';
+import 'Util/notification_util.dart';
+import 'Util/scheduler_util.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,94 +19,81 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     _registerTipOfTheDayTaskIfRequired();
     return MaterialApp(
-        title: 'My Dictionary',
-        theme: ThemeData(
-          primarySwatch: Colors.grey,
-        ),
-        home: DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            bottomNavigationBar: TabBar(
+      title: 'My Dictionary',
+      theme: ThemeData(
+        primarySwatch: Colors.grey,
+      ),
+      home: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          bottomNavigationBar: new Material(
+            color: Colors.black38,
+            child: TabBar(
               tabs: [
-                Tab(icon: Icon(Icons.directions_car)),
-                Tab(icon: Icon(Icons.directions_transit)),
-                Tab(icon: Icon(Icons.directions_bike)),
-              ],
-            ),
-            body: TabBarView(
-              children: [
-                HomeScreen(),
-                Icon(Icons.directions_transit),
-                Icon(Icons.directions_bike),
+                Tab(
+                    icon: Icon(
+                  Icons.home,
+                  color: Colors.white,
+                )),
+                Tab(
+                    icon: Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                )),
               ],
             ),
           ),
-        ));
+          body: TabBarView(
+            children: [
+              HomeScreen(),
+              Icon(Icons.settings),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void _registerTipOfTheDayTaskIfRequired() async {
     bool isScheduled = await SharedPreferenceUtil.getBool(
         SharedPreferenceUtil.prefKeyIsWordOfTheDayScheduled);
-    if (!isScheduled) {
-      await SchedulerUtil.schedulePeriodicTask(
+//    if (!isScheduled) {
+      await SchedulerUtil().scheduleOneOffTask(
           SchedulerUtil.WordOfTheDayTaskId,
           SchedulerUtil.WordOfTheDayTask,
-          _showNotificationWithDefaultSound,
-          Duration(minutes: 15));
+          Duration(minutes: 1));
+      debugPrint("Scheduled sendWordOfTheDayLocalNotification");
       SharedPreferenceUtil.setBool(
           SharedPreferenceUtil.prefKeyIsWordOfTheDayScheduled, true);
+//      await AndroidAlarmManager.initialize();
+//      await AndroidAlarmManager.periodic(
+//          const Duration(minutes: 1), 1001, sendWordOfTheDayLocalNotification);
     }
-  }
+//  }
+}
 
-  void _showNotificationWithDefaultSound() {
-    Workmanager.executeTask((task, inputData) async {
-      DictionaryBloc dictionaryBloc = new DictionaryBloc();
-      List<Word> words = await dictionaryBloc.getAllWords();
+void callbackDispatcher() {
+  Workmanager.executeTask((task, inputData) {
+    return sendWordOfTheDayLocalNotification();
+  });
+}
 
-      if (words.length > 0) {
-        var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-            '2001', 'Word of the day', 'To show word of the day notification',
-            importance: Importance.Max, priority: Priority.High);
-        var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-        var platformChannelSpecifics = new NotificationDetails(
-            androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+Future<bool> sendWordOfTheDayLocalNotification() async {
+  debugPrint("sendWordOfTheDayLocalNotification called");
+  List<Word> words = await new DictionaryRepository().getAllWords();
 
-        var randomIndex = new Random().nextInt(words.length - 1);
-        var word = words[randomIndex];
-        var body = "${word.word} : ${word.meaning}";
-
-        FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-            new FlutterLocalNotificationsPlugin();
-// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-        var initializationSettingsAndroid =
-            new AndroidInitializationSettings('@mipmap/ic_launcher');
-        var initializationSettingsIOS = IOSInitializationSettings(
-            onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-        var initializationSettings = InitializationSettings(
-            initializationSettingsAndroid, initializationSettingsIOS);
-        flutterLocalNotificationsPlugin.initialize(initializationSettings,
-            onSelectNotification: onSelectNotification);
-
-        await flutterLocalNotificationsPlugin.show(
-          randomIndex,
-          'Word of the day',
-          body,
-          platformChannelSpecifics,
-          payload: 'Default_Sound',
-        );
-      }
-      return Future.value(true);
-    });
-  }
-
-  Future onSelectNotification(String payload) async {
-    if (payload != null) {
-      debugPrint('notification payload: ' + payload);
+  if (words.length > 0) {
+    debugPrint("Words found to notify");
+    var randomIndex = new Random().nextInt(words.length - 1);
+    if (randomIndex < 0 || randomIndex >= words.length) {
+      randomIndex = 0;
     }
+    var word = words[randomIndex];
+    var body = "${word.word} : ${word.meaning}";
+    debugPrint("WOD is: $body");
+    await NotificationUtil.sendWordOfTheDayLocalNotification(randomIndex, body);
+  } else {
+    debugPrint("No words found to notify");
   }
-
-  Future onDidReceiveLocalNotification(
-      int id, String title, String body, String payload) async {
-    // display a dialog with the notification details, tap ok to go to another page
-  }
+  return Future.value(false);
 }

@@ -11,6 +11,8 @@ class HomeStateBloc extends Bloc {
   Stream<HomeStateData> get homeStateStream =>
       _homeStateStreamController.stream;
 
+  HomeState currentHomeState;
+
   HomeStateBloc() {
     setHomeState(HomeState.ViewWordList, "Loading words, please wait...");
   }
@@ -21,6 +23,10 @@ class HomeStateBloc extends Bloc {
   }
 
   void setHomeState(HomeState state, String message) {
+    if(currentHomeState == state){
+      return;
+    }
+    currentHomeState = state;
     _homeStateStreamController.sink
         .add(new HomeStateData(homeState: state, message: message));
   }

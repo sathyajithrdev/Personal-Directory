@@ -52,6 +52,7 @@ class SaveViewWord extends BaseStatelessWidget {
                   padding: EdgeInsets.all(10),
                   child: TextField(
                     style: TextStyle(color: Colors.white),
+                    textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
                         border: InputBorder.none,
                         hintStyle: TextStyle(color: Colors.white70),
@@ -70,6 +71,7 @@ class SaveViewWord extends BaseStatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.all(10),
                   child: TextField(
+                    textCapitalization: TextCapitalization.sentences,
                     style: TextStyle(color: Colors.white),
                     maxLines: 4,
                     decoration: InputDecoration(

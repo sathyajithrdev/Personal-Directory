@@ -14,11 +14,12 @@ class WordListView extends BaseStatelessWidget {
   final VoidCallback onWordListingCompleted;
   final Function(Word word) onUpdateWordClick;
 
-  WordListView({@required this.onWordListingCompleted, this.onUpdateWordClick});
+  WordListView({@required this.onWordListingCompleted, this.onUpdateWordClick}){
+    _bloc.fetchAllWords();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _bloc.fetchAllWords();
     return BlocProvider<DictionaryBloc>(
       bloc: _bloc,
       child: StreamBuilder(
@@ -98,7 +99,7 @@ class WordListView extends BaseStatelessWidget {
                 color: CustomColors.wordsBackground,
                 borderRadius: BorderRadius.circular(10)),
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(8.0,16,8,16),
               child: Row(
                 children: <Widget>[
                   Expanded(

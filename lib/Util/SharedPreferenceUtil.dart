@@ -11,6 +11,6 @@ class SharedPreferenceUtil {
 
   static Future<bool> getBool(String key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.get(key)?? false;
+    return prefs.getBool(key)?? false;
   }
 }
